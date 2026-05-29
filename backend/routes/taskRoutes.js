@@ -7,21 +7,21 @@ const { getTasks, setTask, updateTask, deleteTask } = require('../controllers/ta
 // @route   GET /api/tasks
 // @desc    Get all tasks
 // @access  Public
-router.get('/', getTasks)
+router.get('/', getTasks);
 
 // @route   POST /api/tasks
 // @desc    Create a new task
 // @access  Public
-router.post('/', setTask)
+router.post('/', setTask);
 
 // @route   PUT /api/tasks/:id
 // @desc    Update a task
 // @access  Public
-router.put('/:id', updateTask)
+router.put('/:id', updateTask);
 
 // @route   DELETE /api/tasks/:id
 // @desc    Delete a task
 // @access  Public
-router.delete('/:id', deleteTask)
+router.delete('/:id', deleteTask);
 
 module.exports = router;

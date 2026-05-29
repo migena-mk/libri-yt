@@ -22,6 +22,9 @@ app.use(express.urlencoded({ extended: false }));
 // Importing and using task routes
 app.use('/api/tasks', require('./routes/taskRoutes'));
 
+// Importing and using user routes
+app.use('/api/users', require('./routes/userRoutes'));
+
 // Using the custom error handling middleware
 app.use(errorHandler);
 
