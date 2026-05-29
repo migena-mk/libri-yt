@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv').config();
 const { errorHandler } = require('./middlewares/errorMiddleware');
 const connectDB = require('./connect/database');
+const cors = require('cors');
 
 // Connecting to the database
 connectDB();
@@ -12,6 +13,9 @@ const port = process.env.PORT || 5000;
 
 // Initializing the Express application
 const app = express();
+
+// Enabling CORS for all routes
+app.use(cors());
 
 // Middleware to parse JSON bodies in requests
 app.use(express.json());
