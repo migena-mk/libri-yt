@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importing the task controller
-const { getTasks, createTask, updateTask, deleteTask } = require('../controllers/taskController');
+const { getTasks, setTask, updateTask, deleteTask } = require('../controllers/taskController');
 
 // @route   GET /api/tasks
 // @desc    Get all tasks
@@ -12,7 +12,7 @@ router.get('/', getTasks)
 // @route   POST /api/tasks
 // @desc    Create a new task
 // @access  Public
-router.post('/', createTask)
+router.post('/', setTask)
 
 // @route   PUT /api/tasks/:id
 // @desc    Update a task
