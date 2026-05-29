@@ -2,21 +2,21 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const taskApi = createApi({
     reducerPath: 'taskApi',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-    prepareHeaders: (headers, { getState }) => {
-        const token = getState().user.token;
-        if (token) {
-            headers.set('Authorization', `Bearer ${token}`);
-        }
-        return headers;
-    },
+    baseQuery: fetchBaseQuery({
+        baseUrl: import.meta.env.VITE_API_URL,
+        prepareHeaders: (headers, { getState }) => {
+            const token = getState().user.token;
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
+    }),
     endpoints: (builder) => {
         return {
             getTasks: builder.query({
-                query: () => ({
-                    url: '/tasks',
-                }),
-                provideTags: ['Task'],
+                query: () => '/tasks',
+                providesTags: ['Task'],
             }),
             createTask: builder.mutation({
                 query: (newTask) => ({
