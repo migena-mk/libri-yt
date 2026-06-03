@@ -23,8 +23,8 @@ app.use(express.json());
 // Middleware to parse URL-encoded bodies in requests
 app.use(express.urlencoded({ extended: false }));
 
-// Importing and using task routes
-app.use('/api/tasks', require('./routes/taskRoutes'));
+// Importing and using book routes
+app.use('/api/books', require('./routes/taskRoutes'));
 
 // Importing and using user routes
 app.use('/api/users', require('./routes/userRoutes'));

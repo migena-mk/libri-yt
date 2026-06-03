@@ -1,4 +1,4 @@
-import { FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaBookOpen, FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -16,14 +16,14 @@ const Header = () => {
     return (
         <header className='header'>
             <div className="logo">
-                <Link to='/'>Task Creator</Link>
+                <Link to='/'><FaBookOpen /> Katalog Librash</Link>
             </div>
 
             <ul>
                 {user ? (
                     <li>
                         <button className='btn' onClick={handleLogout}>
-                            <FaSignOutAlt /> Logout
+                            <FaSignOutAlt /> Dil
                         </button>
                     </li>
                 ) : (
@@ -35,7 +35,7 @@ const Header = () => {
                         </li>
                         <li>
                             <Link to='/register'>
-                                <FaUser /> Register
+                                <FaUser /> Regjistrohu
                             </Link>
                         </li>
                     </>

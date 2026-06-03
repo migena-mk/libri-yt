@@ -1,30 +1,43 @@
-
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-
 import TaskForm from './TaskForm';
+import TaskList from './TaskList';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const user = useSelector(state => state.user);
+    const user = useSelector((state) => state.user);
+    const [editingBook, setEditingBook] = useState(null);
+    const adminPanelRef = useRef(null);
+    const isAdmin = user?.role === 'admin';
 
-  useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate])
+    const handleEditBook = (book) => {
+        setEditingBook(book);
+        window.setTimeout(() => {
+            adminPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 0);
+    };
 
-  return (
-    <>
-      <section className='heading'>
-        <h1>Welcome {user && user.name}</h1>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button className='btn' onClick={()=>navigate('/alltasks')}>Check Tasks</button>
-        </div>
-      </section>
+    return (
+        <>
+            <section className='hero'>
+                <div>
+                    <span className='eyebrow'>Biblioteka online</span>
+                    <h1>Katalogu i librave</h1>
+                    <p>
+                        Shfleto librat ekzistues sipas kategorive dhe hap detajet per te pare autorin,
+                        numrin e faqeve dhe pershkrimin e plote.
+                    </p>
+                </div>
+            </section>
 
-      <TaskForm />
-    </>
-  )
-}
+            {isAdmin && (
+                <div ref={adminPanelRef}>
+                    <TaskForm editingBook={editingBook} onCancelEdit={() => setEditingBook(null)} />
+                </div>
+            )}
 
-export default Dashboard
+            <TaskList onEdit={handleEditBook} />
+        </>
+    );
+};
+
+export default Dashboard;

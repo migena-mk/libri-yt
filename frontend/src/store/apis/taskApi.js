@@ -2,10 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const taskApi = createApi({
     reducerPath: 'taskApi',
+    tagTypes: ['Book'],
     baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_URL,
+        baseUrl: "http://localhost:8000/api",
         prepareHeaders: (headers, { getState }) => {
-            const token = getState().user.token;
+            const token = getState().user?.token;
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`);
             }
@@ -14,35 +15,39 @@ export const taskApi = createApi({
     }),
     endpoints: (builder) => {
         return {
-            getTasks: builder.query({
-                query: () => '/tasks',
-                providesTags: ['Task'],
+            getBooks: builder.query({
+                query: () => '/books',
+                providesTags: ['Book'],
             }),
-            createTask: builder.mutation({
-                query: (newTask) => ({
-                    url: '/tasks',
+            getBook: builder.query({
+                query: (id) => `/books/${id}`,
+                providesTags: ['Book'],
+            }),
+            createBook: builder.mutation({
+                query: (newBook) => ({
+                    url: '/books',
                     method: 'POST',
-                    body: newTask,
+                    body: newBook,
                 }),
-                invalidatesTags: ['Task'],
+                invalidatesTags: ['Book'],
             }),
-            updateTask: builder.mutation({
+            updateBook: builder.mutation({
                 query: ({ id, ...data }) => ({
-                    url: `/tasks/${id}`,
+                    url: `/books/${id}`,
                     method: 'PUT',
                     body: data,
                 }),
-                invalidatesTags: ['Task'],
+                invalidatesTags: ['Book'],
             }),
-            deleteTask: builder.mutation({
+            deleteBook: builder.mutation({
                 query: (id) => ({
-                    url: `/tasks/${id}`,
+                    url: `/books/${id}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: ['Task'],
+                invalidatesTags: ['Book'],
             }),
         }
     }
 });
 
-export const { useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation, useDeleteTaskMutation } = taskApi;
+export const { useGetBooksQuery, useGetBookQuery, useCreateBookMutation, useUpdateBookMutation, useDeleteBookMutation } = taskApi;

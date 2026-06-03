@@ -1,81 +1,99 @@
 const asyncHandler = require('express-async-handler');
 
-// Importing the Task model and User model to interact with the database
-const Task = require('../models/taskModel');
-const User = require('../models/userModel');
+// Importing the Book model to interact with the database
+const Book = require('../models/taskModel');
 
 const getTasks = asyncHandler(async (req, res) => {
-    // Fetch all tasks from the database that belong to the logged-in user
-    const tasks = await Task.find({ user: req.user.id });
-    res.status(200).json(tasks);
+    // Fetch the full public book catalog
+    const books = await Book.find().sort({ category: 1, title: 1 });
+    res.status(200).json(books);
+});
+
+const getTask = asyncHandler(async (req, res) => {
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+        res.status(404);
+        throw new Error('Book not found');
+    }
+
+    res.status(200).json(book);
 });
 
 const setTask = asyncHandler(async (req, res) => {
-    // Check if the request body contains the 'text' field, which is required to create a task
-    if (!req?.body?.text) {
+    const {
+        title,
+        author,
+        category,
+        pages,
+        description,
+        isbn,
+        publisher,
+        publishedYear,
+        language,
+        edition,
+        shelfLocation,
+        availability,
+        copies,
+        coverUrl,
+        longDescription,
+    } = req.body;
+
+    // Check if the request body contains all fields required to create a book
+    if (!title || !author || !category || !pages || !description) {
         res.status(400)
-        throw new Error('Please add a task');
+        throw new Error('Please fill in all book fields');
     }
 
-    // Create a new task in the database with the text from the request body and associate it with the logged-in user's ID
-    const task = await Task.create({
-        text: req.body.text,
+    // Create a new book in the database and associate it with the admin who added it
+    const book = await Book.create({
+        title,
+        author,
+        category,
+        pages,
+        description,
+        isbn,
+        publisher,
+        publishedYear,
+        language,
+        edition,
+        shelfLocation,
+        availability,
+        copies,
+        coverUrl,
+        longDescription,
         user: req.user.id
     });
-    res.status(200).json(task);
+    res.status(200).json(book);
 });
 
 const updateTask = asyncHandler(async (req, res) => {
-    // Check if the task exists
-    const task = await Task.findById(req.params.id);
-    if (!task) {
+    // Check if the book exists
+    const book = await Book.findById(req.params.id);
+    if (!book) {
         res.status(400);
-        throw new Error('Task not found');
+        throw new Error('Book not found');
     }
 
-    // Check if the user exists
-    const user = await User.findById(req.user.id);
-    if (!user) {
-        res.status(401);
-        throw new Error('User not found');
-    }
-
-    // Check if the logged in user matches the task's user
-    if (task.user.toString() !== user.id) {
-        res.status(401);
-        throw new Error('User not authorized');
-    }
-
-    // Update the task with the new data from the request body
-    const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json(updatedTask);
+    // Update the book with the new data from the request body
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+    });
+    res.status(200).json(updatedBook);
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
-    // Check if the task exists
-    const task = await Task.findById(req.params.id);
-    if (!task) {
+    // Check if the book exists
+    const book = await Book.findById(req.params.id);
+    if (!book) {
         res.status(400);
-        throw new Error('Task not found');
+        throw new Error('Book not found');
     }
 
-    // Check if the user exists
-    const user = await User.findById(req.user.id);
-    if (!user) {
-        res.status(401);
-        throw new Error('User not found');
-    }
+    // Delete the book from the database
+    await Book.findByIdAndDelete(req.params.id);
 
-    // Check if the logged in user matches the task's user
-    if (task.user.toString() !== user.id) {
-        res.status(401);
-        throw new Error('User not authorized');
-    }
-
-    // Delete the task from the database
-    await Task.findByIdAndDelete(req.params.id);
-
-    res.status(200).json({ message: `Task ${req.params.id} deleted.` });
+    res.status(200).json({ message: `Book ${req.params.id} deleted.` });
 })
 
-module.exports = { getTasks, setTask, updateTask, deleteTask }
+module.exports = { getTasks, getTask, setTask, updateTask, deleteTask }

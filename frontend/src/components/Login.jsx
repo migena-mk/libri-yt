@@ -1,6 +1,6 @@
 import { FaSignInAlt } from 'react-icons/fa';
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { setUser } from '../store/slices/userSlice';
@@ -10,68 +10,59 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [login, { isLoading }] = useLoginMutation();
-    const user = useSelector(state => state.user);
-
-    const [formData, setFormData] = useState({ email: '', password: '' })
+    const user = useSelector((state) => state.user);
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const { email, password } = formData;
 
-    const onChange = e => {
-        setFormData(prevState => ({
+    const onChange = (e) => {
+        setFormData((prevState) => ({
             ...prevState,
-            [e.target.name]: e.target.value
-        }))
-    }
+            [e.target.name]: e.target.value,
+        }));
+    };
 
     const onSubmit = async (e) => {
         e.preventDefault();
-
-        try {
-            const response = await login(formData);
-            if (response.error) {
-                toast.error(response.error.data?.message || response.error.error || 'Login failed');
-            } else {
-                dispatch(setUser(response.data));
-                localStorage.setItem('user', JSON.stringify(response.data))
-                navigate('/');
-                toast.success(`Welcome ${response.data.name}!`);
-            }
-        } catch (err) {
-            console.error('Login failed', err);
+        const response = await login(formData);
+        if (response.error) {
+            toast.error(response.error.data?.message || response.error.error || 'Login deshtoi');
+            return;
         }
-    }
+
+        dispatch(setUser(response.data));
+        localStorage.setItem('user', JSON.stringify(response.data));
+        navigate('/');
+        toast.success(`Mire se erdhe ${response.data.name}!`);
+    };
 
     useEffect(() => {
-        if (user) {
-            navigate('/');
-        }
+        if (user) navigate('/');
     }, [user, navigate]);
 
     return (
         <>
-            <section className='heading'>
+            <section className='heading auth-heading'>
                 <h1><FaSignInAlt /> Login</h1>
-                <p>Login and start creating tasks</p>
+                <p>Hyr ne llogari per te pare katalogun e librave</p>
             </section>
 
-            <section className='form'>
+            <section className='form auth-card'>
                 <form onSubmit={onSubmit}>
                     <div className='form-group'>
-                        <input required type='email' className='form-control' id='email' name='email' value={email} placeholder='Enter your email'
-                            onChange={onChange} />
+                        <label htmlFor='email'>Email</label>
+                        <input required type='email' id='email' name='email' value={email} placeholder='email@example.com' onChange={onChange} />
                     </div>
                     <div className='form-group'>
-                        <input required type='password' className='form-control' id='password' name='password' value={password} placeholder='Enter password'
-                            onChange={onChange} />
+                        <label htmlFor='password'>Fjalekalimi</label>
+                        <input required type='password' id='password' name='password' value={password} placeholder='Fjalekalimi' onChange={onChange} />
                     </div>
-                    <div className='form-group'>
-                        <button type='submit' className='btn btn-block' disabled={isLoading}>
-                            {isLoading ? 'Please wait...' : 'Login'}
-                        </button>
-                    </div>
+                    <button type='submit' className='btn btn-block' disabled={isLoading}>
+                        {isLoading ? 'Ju lutem prisni...' : 'Login'}
+                    </button>
                 </form>
-            </section >
+            </section>
         </>
+    );
+};
 
-    )
-}
-export default Login
+export default Login;

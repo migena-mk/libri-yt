@@ -2,29 +2,34 @@ const express = require('express');
 const router = express.Router();
 
 // Importing the task controller
-const { getTasks, setTask, updateTask, deleteTask } = require('../controllers/taskController');
+const { getTasks, getTask, setTask, updateTask, deleteTask } = require('../controllers/taskController');
 
 // Importing the protect middleware to secure routes that require authentication
-const { protect } = require('../middlewares/authMiddleware');
+const { protect, admin } = require('../middlewares/authMiddleware');
 
-// @route   GET /api/tasks
-// @desc    Get all tasks
-// @access  Private
-router.get('/', protect, getTasks);
+// @route   GET /api/books
+// @desc    Get all books
+// @access  Public
+router.get('/', getTasks);
 
-// @route   POST /api/tasks
-// @desc    Create a new task
-// @access  Private
-router.post('/', protect, setTask);
+// @route   GET /api/books/:id
+// @desc    Get a single book
+// @access  Public
+router.get('/:id', getTask);
 
-// @route   PUT /api/tasks/:id
-// @desc    Update a task
-// @access  Private
-router.put('/:id', protect, updateTask);
+// @route   POST /api/books
+// @desc    Create a new book
+// @access  Private/Admin
+router.post('/', protect, admin, setTask);
 
-// @route   DELETE /api/tasks/:id
-// @desc    Delete a task
-// @access  Private
-router.delete('/:id', protect, deleteTask);
+// @route   PUT /api/books/:id
+// @desc    Update a book
+// @access  Private/Admin
+router.put('/:id', protect, admin, updateTask);
+
+// @route   DELETE /api/books/:id
+// @desc    Delete a book
+// @access  Private/Admin
+router.delete('/:id', protect, admin, deleteTask);
 
 module.exports = router;

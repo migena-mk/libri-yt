@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
-
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -12,64 +11,78 @@ const Register = () => {
     const dispatch = useDispatch();
     const [register, { isLoading }] = useRegisterMutation();
 
-    const [formData, setFormData] = useState({ name: '', email: '', password: '', password2: '' })
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        password2: '',
+    });
+
     const { name, email, password, password2 } = formData;
 
-    const onChange = e => {
-        setFormData(prevState => ({
+    const onChange = (e) => {
+        setFormData((prevState) => ({
             ...prevState,
-            [e.target.name]: e.target.value
-        }))
-    }
+            [e.target.name]: e.target.value,
+        }));
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
         if (password !== password2) {
-            toast.error('Passwords are different')
-        } else {
-            const response = await register(formData);
-            if (response.error) {
-                toast.error(response.error.data?.message || response.error.error || 'Registration failed');
-            } else {
-                dispatch(setUser(response.data));
-                localStorage.setItem('user', JSON.stringify(response.data));
-                navigate('/');
-                toast.success('Registration successful!');
-            }
+            toast.error('Fjalekalimet nuk perputhen');
+            return;
         }
-    }
 
+        const { password2: _password2, ...registerData } = formData;
+        const response = await register(registerData);
+        if (response.error) {
+            toast.error(response.error.data?.message || response.error.error || 'Regjistrimi deshtoi');
+            return;
+        }
+
+        dispatch(setUser(response.data));
+        localStorage.setItem('user', JSON.stringify(response.data));
+        navigate('/');
+        toast.success('Regjistrimi u krye me sukses!');
+    };
 
     return (
         <>
-            <section className='heading'>
-                <h1><FaUser /> Register</h1>
-                <p>Please create an account</p>
+            <section className='heading auth-heading'>
+                <h1><FaUser /> Regjistrohu</h1>
+                <p>Krijo llogarine e adminit per te menaxhuar katalogun</p>
             </section>
 
-            <section className='form'>
+            <section className='form auth-card'>
                 <form onSubmit={onSubmit}>
                     <div className='form-group'>
-                        <input type='text' className='form-control' id='name' name='name' value={name} placeholder='Enter your name' onChange={onChange} />
+                        <label htmlFor='name'>Emri</label>
+                        <input required type='text' id='name' name='name' value={name} placeholder='Emri juaj' onChange={onChange} />
                     </div>
 
                     <div className='form-group'>
-                        <input type='email' className='form-control' id='email' name='email' value={email} placeholder='Enter your email' onChange={onChange} />
+                        <label htmlFor='email'>Email</label>
+                        <input required type='email' id='email' name='email' value={email} placeholder='email@example.com' onChange={onChange} />
                     </div>
 
                     <div className='form-group'>
-                        <input type='password' className='form-control' id='password' name='password' value={password} placeholder='Enter password' onChange={onChange} />
-                    </div >
-
-                    < div className='form-group'>
-                        < input type='password' className='form-control' id='password2' name='password2' value={password2} placeholder='Confirm password' onChange={onChange} />
-                    </div >
+                        <label htmlFor='password'>Fjalekalimi</label>
+                        <input required type='password' id='password' name='password' value={password} placeholder='Fjalekalimi' onChange={onChange} />
+                    </div>
 
                     <div className='form-group'>
-                        <button type='submit' className='btn btn-block' disabled={isLoading}>{isLoading ? "Please Wait..." : "Register"}</button>
-                    </div >
-                </form >
-            </section >
+                        <label htmlFor='password2'>Konfirmo fjalekalimin</label>
+                        <input required type='password' id='password2' name='password2' value={password2} placeholder='Konfirmo fjalekalimin' onChange={onChange} />
+                    </div>
+
+                    <button type='submit' className='btn btn-block' disabled={isLoading}>
+                        {isLoading ? 'Ju lutem prisni...' : 'Regjistrohu'}
+                    </button>
+                </form>
+            </section>
         </>
-    )
-}
-export default Register
+    );
+};
+
+export default Register;

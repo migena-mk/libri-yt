@@ -1,61 +1,53 @@
-import { useState, useRef, useEffect } from 'react';
-import { useDeleteTaskMutation, useUpdateTaskMutation } from '../store/apis/taskApi';
+import { MdOutlineDelete, MdOutlineEdit } from 'react-icons/md';
+import { Link } from 'react-router';
 import { toast } from 'react-toastify';
-import { MdOutlineEdit, MdOutlineSave, MdOutlineDelete } from "react-icons/md";
+import { useDeleteBookMutation } from '../store/apis/taskApi';
 
-
-const TaskItem = ({ task }) => {
-    const [updateTask] = useUpdateTaskMutation();
-    const [deleteTask] = useDeleteTaskMutation();
-
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedText, setEditedText] = useState(task.text);
-
-    const inputRef = useRef(null);
-
+const TaskItem = ({ book, isAdmin, onEdit }) => {
+    const [deleteBook] = useDeleteBookMutation();
 
     const handleDelete = async () => {
-        const result = await deleteTask(task._id);
+        const result = await deleteBook(book._id);
         if (result.error) {
-            toast.error(result.error.data?.message || 'Task deletion failed!');
-        } else {
-            toast.success('Task deleted successfully!');
+            toast.error(result.error.data?.message || 'Fshirja e librit deshtoi');
+            return;
         }
+
+        toast.success('Libri u fshi nga katalogu');
     };
-
-    const handleUpdate = async () => {
-        if (!editedText.trim()) return;
-        const result = await updateTask({ id: task._id, text: editedText });
-        if (result.error) {
-            toast.error(result.error.data?.message || 'Failed to update the task!');
-        } else {
-            toast.success('Task updated successfully!');
-            setIsEditing(false);
-        }
-    };
-
-
-    useEffect(() => {
-        if (isEditing && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [isEditing]);
 
     return (
-        <div className='task'>
-            {isEditing ? (
-                <button onClick={handleUpdate} className='edit'><MdOutlineSave /></button>
-            ) : (
-                <button onClick={() => setIsEditing(true)} className='edit'><MdOutlineEdit /></button>
+        <article className='book-card'>
+            {book.coverUrl && <img className='book-cover-thumb' src={book.coverUrl} alt={book.title} />}
+            <div className='book-top'>
+                <span className='book-category'>{book.category}</span>
+                <span className='book-pages'>{book.pages} faqe</span>
+            </div>
+
+            <h3>
+                <Link to={`/books/${book._id}`}>{book.title}</Link>
+            </h3>
+            <p className='book-author'>nga {book.author}</p>
+            <p className='book-description'>{book.description}</p>
+            <div className='book-mini-meta'>
+                {book.publishedYear && <span>{book.publishedYear}</span>}
+                {book.language && <span>{book.language}</span>}
+                {book.availability && <span>{book.availability === 'available' ? 'I disponueshem' : book.availability === 'borrowed' ? 'I huazuar' : 'I rezervuar'}</span>}
+            </div>
+            <Link className='text-link' to={`/books/${book._id}`}>Shiko detajet</Link>
+
+            {isAdmin && (
+                <div className='book-actions'>
+                    <button type='button' className='icon-btn' onClick={() => onEdit(book)} aria-label='Modifiko librin'>
+                        <MdOutlineEdit />
+                    </button>
+                    <button type='button' className='icon-btn danger' onClick={handleDelete} aria-label='Fshi librin'>
+                        <MdOutlineDelete />
+                    </button>
+                </div>
             )}
-            <button onClick={handleDelete} className='close'><MdOutlineDelete /></button>
-            <div>{new Date(task.createdAt).toLocaleString('sq-AL')}</div>
-            {isEditing ? (
-                <input ref={inputRef} className='edit-input' type="text" value={editedText} onChange={(e) => setEditedText(e.target.value)} />
-            ) : (
-                <h2 style={{ border: "1px solid transparent" }}>{task.text}</h2>
-            )}
-        </div>
+        </article>
     );
 };
+
 export default TaskItem;
