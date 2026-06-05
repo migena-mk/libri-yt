@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router';
-import { useGetBookQuery } from '../store/apis/taskApi';
+import { useGetBookQuery } from '../store/apis/bookApi';
 import Spinner from './Spinner';
 
 const BookDetail = () => {

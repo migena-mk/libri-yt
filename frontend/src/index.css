@@ -113,6 +113,63 @@ select {
   line-height: 1.7;
 }
 
+.dashboard-hero {
+  display: grid;
+  grid-template-columns: 1fr minmax(240px, 320px);
+  gap: 22px;
+  align-items: stretch;
+  margin-bottom: 26px;
+}
+
+.dashboard-copy,
+.dashboard-summary {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 16px 44px rgba(63, 42, 29, 0.08);
+}
+
+.dashboard-copy {
+  padding: 30px;
+}
+
+.dashboard-copy h1 {
+  margin: 8px 0 10px;
+  color: var(--coffee-dark);
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1;
+}
+
+.dashboard-copy p {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.dashboard-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(141, 155, 106, 0.18), rgba(197, 139, 107, 0.12)),
+    var(--surface);
+}
+
+.dashboard-summary span {
+  color: var(--sage);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.dashboard-summary strong {
+  color: var(--coffee-dark);
+  overflow-wrap: anywhere;
+}
+
 .eyebrow,
 .section-title span,
 .book-category {
@@ -154,7 +211,7 @@ select {
 }
 
 .auth-card,
-.admin-panel {
+.management-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -165,7 +222,7 @@ select {
   padding: 28px;
 }
 
-.admin-panel {
+.management-panel {
   width: 100%;
   margin-bottom: 34px;
   padding: 28px;
@@ -531,12 +588,16 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .dashboard-hero {
+    grid-template-columns: 1fr;
+  }
+
   .book-detail-card {
     grid-template-columns: 1fr;
   }
 
   .auth-card,
-  .admin-panel {
+  .management-panel {
     padding: 20px;
   }
 }

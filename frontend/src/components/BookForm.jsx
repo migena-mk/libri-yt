@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useCreateBookMutation, useUpdateBookMutation } from '../store/apis/taskApi';
+import { useCreateBookMutation, useUpdateBookMutation } from '../store/apis/bookApi';
 
 const emptyBook = {
     title: '',
@@ -20,34 +20,34 @@ const emptyBook = {
     longDescription: '',
 };
 
-const TaskForm = ({ editingBook, onCancelEdit }) => {
-    const [formData, setFormData] = useState(emptyBook);
+const getInitialBookForm = (book) => {
+    if (!book) {
+        return emptyBook;
+    }
+
+    return {
+        title: book.title,
+        author: book.author,
+        category: book.category,
+        pages: book.pages,
+        description: book.description,
+        isbn: book.isbn || '',
+        publisher: book.publisher || '',
+        publishedYear: book.publishedYear || '',
+        language: book.language || '',
+        edition: book.edition || '',
+        shelfLocation: book.shelfLocation || '',
+        availability: book.availability || 'available',
+        copies: book.copies ?? 1,
+        coverUrl: book.coverUrl || '',
+        longDescription: book.longDescription || '',
+    };
+};
+
+const BookForm = ({ editingBook, onCancelEdit }) => {
+    const [formData, setFormData] = useState(() => getInitialBookForm(editingBook));
     const [createBook, { isLoading: isCreating }] = useCreateBookMutation();
     const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
-
-    useEffect(() => {
-        if (editingBook) {
-            setFormData({
-                title: editingBook.title,
-                author: editingBook.author,
-                category: editingBook.category,
-                pages: editingBook.pages,
-                description: editingBook.description,
-                isbn: editingBook.isbn || '',
-                publisher: editingBook.publisher || '',
-                publishedYear: editingBook.publishedYear || '',
-                language: editingBook.language || '',
-                edition: editingBook.edition || '',
-                shelfLocation: editingBook.shelfLocation || '',
-                availability: editingBook.availability || 'available',
-                copies: editingBook.copies ?? 1,
-                coverUrl: editingBook.coverUrl || '',
-                longDescription: editingBook.longDescription || '',
-            });
-        } else {
-            setFormData(emptyBook);
-        }
-    }, [editingBook]);
 
     const onChange = (e) => {
         setFormData((prevState) => ({
@@ -82,9 +82,9 @@ const TaskForm = ({ editingBook, onCancelEdit }) => {
     const isLoading = isCreating || isUpdating;
 
     return (
-        <section className='admin-panel'>
+        <section className='management-panel'>
             <div className='section-title'>
-                <span>Panel admini</span>
+                <span>Panel menaxhimi</span>
                 <h2>{editingBook ? 'Modifiko librin' : 'Shto liber te ri'}</h2>
                 {editingBook && <p className='editing-note'>Po modifikon: {editingBook.title}</p>}
             </div>
@@ -173,4 +173,4 @@ const TaskForm = ({ editingBook, onCancelEdit }) => {
     );
 };
 
-export default TaskForm;
+export default BookForm;

@@ -7,16 +7,15 @@ const protect = asyncHandler(async (req, res, next) => {
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Get token from header
             token = req.headers.authorization.split(' ')[1];
-
-            // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-            // Get user from the token
             req.user = await User.findById(decoded.id).select('-password');
 
-            // Call the next middleware
+            if (!req.user) {
+                res.status(401);
+                throw new Error('Not authorized, user not found');
+            }
+
             next();
         } catch (error) {
             console.error(error);
@@ -30,13 +29,4 @@ const protect = asyncHandler(async (req, res, next) => {
     }
 });
 
-const admin = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
-        next();
-    } else {
-        res.status(403);
-        throw new Error('Admin access required');
-    }
-};
-
-module.exports = { protect, admin };
+module.exports = { protect };

@@ -1,18 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-
-// Import the user reducer
 import userReducer from './slices/userSlice';
-
-// Import the API slices
 import { userApi } from './apis/userApi';
-import { taskApi } from './apis/taskApi';
+import { bookApi } from './apis/bookApi';
 
 export const store = configureStore({
     reducer: {
         user: userReducer,
         [userApi.reducerPath]: userApi.reducer,
-        [taskApi.reducerPath]: taskApi.reducer,
+        [bookApi.reducerPath]: bookApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(userApi.middleware, taskApi.middleware),
+        getDefaultMiddleware().concat(userApi.middleware, bookApi.middleware),
 });

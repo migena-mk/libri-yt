@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaUser } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { setUser } from '../store/slices/userSlice';
@@ -9,6 +9,7 @@ import { useRegisterMutation } from '../store/apis/userApi';
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
     const [register, { isLoading }] = useRegisterMutation();
 
     const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ const Register = () => {
             return;
         }
 
-        const { password2: _password2, ...registerData } = formData;
+        const registerData = { name, email, password };
         const response = await register(registerData);
         if (response.error) {
             toast.error(response.error.data?.message || response.error.error || 'Regjistrimi deshtoi');
@@ -43,15 +44,19 @@ const Register = () => {
 
         dispatch(setUser(response.data));
         localStorage.setItem('user', JSON.stringify(response.data));
-        navigate('/');
+        navigate('/dashboard');
         toast.success('Regjistrimi u krye me sukses!');
     };
+
+    useEffect(() => {
+        if (user) navigate('/dashboard');
+    }, [user, navigate]);
 
     return (
         <>
             <section className='heading auth-heading'>
                 <h1><FaUser /> Regjistrohu</h1>
-                <p>Krijo llogarine e adminit per te menaxhuar katalogun</p>
+                <p>Krijo llogarine per te menaxhuar katalogun</p>
             </section>
 
             <section className='form auth-card'>

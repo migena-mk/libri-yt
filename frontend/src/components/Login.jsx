@@ -31,19 +31,19 @@ const Login = () => {
 
         dispatch(setUser(response.data));
         localStorage.setItem('user', JSON.stringify(response.data));
-        navigate('/');
+        navigate('/dashboard');
         toast.success(`Mire se erdhe ${response.data.name}!`);
     };
 
     useEffect(() => {
-        if (user) navigate('/');
+        if (user) navigate('/dashboard');
     }, [user, navigate]);
 
     return (
         <>
             <section className='heading auth-heading'>
                 <h1><FaSignInAlt /> Login</h1>
-                <p>Hyr ne llogari per te pare katalogun e librave</p>
+                <p>Hyr ne llogari per te menaxhuar katalogun e librave</p>
             </section>
 
             <section className='form auth-card'>

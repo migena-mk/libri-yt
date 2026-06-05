@@ -1,7 +1,6 @@
-import { FaBookOpen, FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaBookOpen, FaSignInAlt, FaSignOutAlt, FaTachometerAlt, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-
 import { logoutUser } from '../store/slices/userSlice';
 
 const Header = () => {
@@ -11,8 +10,9 @@ const Header = () => {
 
     const handleLogout = () => {
         dispatch(logoutUser());
-        navigate('/login');
-    }
+        navigate('/auth/login');
+    };
+
     return (
         <header className='header'>
             <div className="logo">
@@ -21,20 +21,27 @@ const Header = () => {
 
             <ul>
                 {user ? (
-                    <li>
-                        <button className='btn' onClick={handleLogout}>
-                            <FaSignOutAlt /> Dil
-                        </button>
-                    </li>
+                    <>
+                        <li>
+                            <Link to='/dashboard'>
+                                <FaTachometerAlt /> Dashboard
+                            </Link>
+                        </li>
+                        <li>
+                            <button className='btn' onClick={handleLogout}>
+                                <FaSignOutAlt /> Dil
+                            </button>
+                        </li>
+                    </>
                 ) : (
                     <>
                         <li>
-                            <Link to='/login'>
+                            <Link to='/auth/login'>
                                 <FaSignInAlt /> Login
                             </Link>
                         </li>
                         <li>
-                            <Link to='/register'>
+                            <Link to='/auth/register'>
                                 <FaUser /> Regjistrohu
                             </Link>
                         </li>
@@ -43,6 +50,7 @@ const Header = () => {
 
             </ul>
         </header>
-    )
-}
-export default Header
+    );
+};
+
+export default Header;

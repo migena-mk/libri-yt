@@ -1,13 +1,10 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { useGetBooksQuery } from '../store/apis/taskApi';
+import { useGetBooksQuery } from '../store/apis/bookApi';
 import Spinner from './Spinner';
-import TaskItem from './TaskItem';
+import BookItem from './BookItem';
 
-const TaskList = ({ onEdit = () => {} }) => {
-    const user = useSelector((state) => state.user);
+const BookList = ({ canManage = false, onEdit = () => {} }) => {
     const { data: books = [], isLoading, isError, error } = useGetBooksQuery();
-    const isAdmin = user?.role === 'admin';
 
     const booksByCategory = useMemo(() => {
         return books.reduce((groups, book) => {
@@ -40,7 +37,7 @@ const TaskList = ({ onEdit = () => {} }) => {
                     </div>
                     <div className='books-grid'>
                         {categoryBooks.map((book) => (
-                            <TaskItem key={book._id} book={book} isAdmin={isAdmin} onEdit={onEdit} />
+                            <BookItem key={book._id} book={book} canManage={canManage} onEdit={onEdit} />
                         ))}
                     </div>
                 </div>
@@ -49,4 +46,4 @@ const TaskList = ({ onEdit = () => {} }) => {
     );
 };
 
-export default TaskList;
+export default BookList;

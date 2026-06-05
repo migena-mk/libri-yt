@@ -1,9 +1,9 @@
 import { MdOutlineDelete, MdOutlineEdit } from 'react-icons/md';
 import { Link } from 'react-router';
 import { toast } from 'react-toastify';
-import { useDeleteBookMutation } from '../store/apis/taskApi';
+import { useDeleteBookMutation } from '../store/apis/bookApi';
 
-const TaskItem = ({ book, isAdmin, onEdit }) => {
+const BookItem = ({ book, canManage, onEdit }) => {
     const [deleteBook] = useDeleteBookMutation();
 
     const handleDelete = async () => {
@@ -36,7 +36,7 @@ const TaskItem = ({ book, isAdmin, onEdit }) => {
             </div>
             <Link className='text-link' to={`/books/${book._id}`}>Shiko detajet</Link>
 
-            {isAdmin && (
+            {canManage && (
                 <div className='book-actions'>
                     <button type='button' className='icon-btn' onClick={() => onEdit(book)} aria-label='Modifiko librin'>
                         <MdOutlineEdit />
@@ -50,4 +50,4 @@ const TaskItem = ({ book, isAdmin, onEdit }) => {
     );
 };
 
-export default TaskItem;
+export default BookItem;
