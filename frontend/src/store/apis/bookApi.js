@@ -4,7 +4,7 @@ export const bookApi = createApi({
     reducerPath: 'bookApi',
     tagTypes: ['Book'],
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8000/api",
+        baseUrl: import.meta.env.VITE_API_URL,
         prepareHeaders: (headers, { getState }) => {
             const token = getState().user?.token;
             if (token) {
